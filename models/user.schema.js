@@ -1,11 +1,11 @@
-var mongoose = require('maongoose');
+var mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-var bcypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 
 /* user schema attribute */
 var userSchema = new Schema({
     email: {
-        type: email,
+        type: String,
         unique: true,
         lowercase: true,
     },
@@ -43,7 +43,7 @@ userSchema.pre('save', function (next) {
     if (!user.isModified('password')) return next();
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return next(err);
-        bcypt.hash(user.password, salt, null, (err, hash) => {
+        bcrypt.hash(user.password, salt, null, (err, hash) => {
             if (err) return next(err);
             user.password = hash;
             next();
@@ -53,6 +53,6 @@ userSchema.pre('save', function (next) {
 
 /*compare password in the database */
 userSchema.methods.comparePassword = (password) => {
-    return bcypt.compareSync(password, this.password)
+    return bcrypt.compareSync(password, this.password)
 };
 module.exports=mongoose.model('User',userSchema)
