@@ -1,7 +1,8 @@
 const chalk = require('chalk');
 var mongoose = require('mongoose');
+var database=require('./config/index')
 mongoose.set('useCreateIndex', true);
-module.exports = mongoose.connect('mongodb://sagarghimire:sagarghimire1@ds119606.mlab.com:19606/koseli', {
+module.exports = mongoose.connect(database.app.database, {
     useNewUrlParser: true
 }, (err) => {
     if (err) {
