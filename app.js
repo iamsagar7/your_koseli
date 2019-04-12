@@ -11,10 +11,11 @@ var flash = require('express-flash');
 var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 var config=require('./config/index')
-
-
+var chalk=require('chalk');
+var faker=require('faker');
 
 var User = require('./models/user');
+var Category = require('./models/category');
 
 var app = express();
 
@@ -40,17 +41,28 @@ app.use(function(req, res, next) {
   res.locals.user = req.user;
   next();
 });
+app.use(function(req, res, next) {
+  Category.find({}, function(err, categories) {
+    if (err) return next(err);
+    res.locals.categories = categories;
+    next();
+  });
+});
 
 app.engine('ejs', engine);
 app.set('view engine', 'ejs');
 
 var mainRoutes = require('./routes/main');
 var userRoutes = require('./routes/user');
+var adminRoutes = require('./routes/admin');
+var apiRoutes = require('./api/api');
 
 app.use(mainRoutes);
 app.use(userRoutes);
+app.use(adminRoutes);
+app.use('/api', apiRoutes);
 
 app.listen(config.app.port, function(err) {
   if (err) throw err;
-  console.log("Server is Running on port " + config.app.port);
+  console.log(chalk.blue("Server is Running on port " + config.app.port));
 });

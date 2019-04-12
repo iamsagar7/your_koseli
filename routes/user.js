@@ -2,7 +2,7 @@ var router = require('express').Router();
 var User = require('../models/user');
 var passport = require('passport');
 var passportConf = require('../config/passport');
-
+var faker=require('faker');
 
 router.get('/login', function(req, res) {
   if (req.user) return res.redirect('/');
@@ -38,7 +38,7 @@ router.post('/signup', function(req, res, next) {
   user.profile.name = req.body.name;
   user.email = req.body.email;
   user.password = req.body.password;
-  user.profile.picture = user.gravatar();
+  user.profile.picture = faker.image.avatar();
 
   User.findOne({ email: req.body.email }, function(err, existingUser) {
 
